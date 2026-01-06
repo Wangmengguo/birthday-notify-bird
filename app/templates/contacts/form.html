@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ '编辑' if action == 'edit' else '添加' }}联系人 - Birthday Notify Bird{% endblock %}
+
+{% block content %}
+<h1>{{ '✏️ 编辑' if action == 'edit' else '➕ 添加' }}联系人</h1>
+
+<div class="card" style="max-width: 500px;">
+    {% if error %}
+    <div class="flash flash-error" style="margin-bottom: 1rem;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/contacts/{{ contact.id }}/edit" 
+          {% if action == 'new' %}action="/contacts/new"{% endif %}>
+        
+        <div class="form-group">
+            <label for="name">姓名 *</label>
+            <input type="text" id="name" name="name" required
+                   value="{{ contact.name if contact else '' }}"
+                   placeholder="输入联系人姓名">
+        </div>
+
+        <div class="form-group">
+            <label for="birthday">生日 *</label>
+            <input type="date" id="birthday" name="birthday" required
+                   value="{{ contact.birthday.strftime('%Y-%m-%d') if contact and contact.birthday else '' }}">
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.25rem;">
+                年份用于计算年龄，提醒只匹配月和日
+            </p>
+        </div>
+
+        <div class="form-group">
+            <label for="note">备注</label>
+            <textarea id="note" name="note" rows="3"
+                      placeholder="添加备注信息（可选）">{{ contact.note if contact and contact.note else '' }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">
+                {{ '保存修改' if action == 'edit' else '添加联系人' }}
+            </button>
+            <a href="/contacts" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

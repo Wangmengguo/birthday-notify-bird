@@ -1,0 +1,38 @@
+# Birthday Notify Bird - Docker Compose
+# Usage: docker compose up -d
+
+services:
+  app:
+    build: .
+    container_name: birthday-notify-bird
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist database
+      - birthday_data:/app/data
+    environment:
+      # Email settings (required)
+      - TO_EMAIL=${TO_EMAIL}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_MODE=${SMTP_MODE:-starttls}
+      # Schedule settings
+      - TIMEZONE=${TIMEZONE:-Asia/Shanghai}
+      - DAILY_RUN_AT=${DAILY_RUN_AT:-09:00}
+      # Optional
+      - BASE_URL=${BASE_URL:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  birthday_data:
+    name: birthday_notify_bird_data
+

@@ -1,0 +1,25 @@
+# Birthday Notify Bird - Python Dependencies
+# Install: pip install -r requirements.txt
+
+# Web framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# Template engine
+jinja2==3.1.4
+
+# Database
+sqlalchemy==2.0.36
+
+# Scheduler
+apscheduler==3.10.4
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Form handling
+python-multipart==0.0.18
+
+# Timezone support
+pytz==2024.2
+

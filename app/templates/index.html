@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - Birthday Notify Bird{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <div style="font-size: 4rem; margin-bottom: 1rem;">🐦</div>
+    <h1 style="margin-bottom: 0.5rem;">Birthday Notify Bird</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+        生日提醒小助手 - 再也不会忘记重要的人的生日
+    </p>
+    
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem;">
+        <a href="/contacts" class="btn btn-primary">
+            📋 管理联系人
+        </a>
+        <a href="/logs" class="btn btn-secondary">
+            📬 查看发送记录
+        </a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; text-align: center;">
+        <div class="card" style="margin: 0;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">提前 7 天</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">提前一周提醒你准备</p>
+        </div>
+        <div class="card" style="margin: 0;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏰</div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">提前 1 天</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">明天就是大日子啦</p>
+        </div>
+        <div class="card" style="margin: 0;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎂</div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">当天提醒</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">今天记得送上祝福</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 1.1rem; margin-bottom: 1rem;">⚙️ 系统状态</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div>
+            <label>定时任务时间</label>
+            <p style="font-size: 1.1rem;">每天 {{ daily_run_at|default("09:00") }}</p>
+        </div>
+        <div>
+            <label>时区设置</label>
+            <p style="font-size: 1.1rem;">{{ timezone|default("Asia/Shanghai") }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

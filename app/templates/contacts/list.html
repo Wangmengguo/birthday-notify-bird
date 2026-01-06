@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}联系人管理 - Birthday Notify Bird{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1>📋 联系人管理</h1>
+    <a href="/contacts/new" class="btn btn-primary">+ 添加联系人</a>
+</div>
+
+{% if contacts %}
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>生日</th>
+                <th>距离下次</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td style="font-weight: 500;">{{ contact.name }}</td>
+                <td>
+                    {{ contact.birthday.strftime('%Y-%m-%d') }}
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;">
+                        ({{ contact.birthday.strftime('%m月%d日') }})
+                    </span>
+                </td>
+                <td>
+                    {% if contact.days_until == 0 %}
+                        <span class="badge badge-success">🎂 今天!</span>
+                    {% elif contact.days_until == 1 %}
+                        <span class="badge badge-warning">明天</span>
+                    {% elif contact.days_until <= 7 %}
+                        <span class="badge badge-info">{{ contact.days_until }} 天</span>
+                    {% else %}
+                        <span style="color: var(--text-secondary);">{{ contact.days_until }} 天</span>
+                    {% endif %}
+                </td>
+                <td style="color: var(--text-secondary); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ contact.note or '-' }}
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="/contacts/{{ contact.id }}/edit" class="btn btn-secondary btn-sm">编辑</a>
+                        <form action="/contacts/{{ contact.id }}/delete" method="POST" style="display: inline;" 
+                              onsubmit="return confirm('确定要删除 {{ contact.name }} 吗？');">
+                            <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">
+    共 {{ contacts|length }} 位联系人
+</p>
+
+{% else %}
+<div class="card empty-state">
+    <div class="empty-state-icon">📋</div>
+    <h3>还没有联系人</h3>
+    <p>添加第一位联系人，开始记录生日吧</p>
+    <a href="/contacts/new" class="btn btn-primary" style="margin-top: 1rem;">+ 添加联系人</a>
+</div>
+{% endif %}
+{% endblock %}
+
