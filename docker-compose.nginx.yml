@@ -25,6 +25,7 @@ services:
       - TIMEZONE=${TIMEZONE:-Asia/Shanghai}
       - DAILY_RUN_AT=${DAILY_RUN_AT:-09:00}
       - BASE_URL=${BASE_URL:-}
+      - ROOT_PATH=${ROOT_PATH:-}
 
   nginx:
     image: nginx:alpine
