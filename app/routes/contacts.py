@@ -10,8 +10,15 @@ from sqlalchemy import select
 from app.db import get_db
 from app.models import Contact
 from app.templates_config import templates
+from app import settings
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
+
+def url_with_root(path: str) -> str:
+    """Helper to add root_path prefix to redirect URLs."""
+    root = settings.ROOT_PATH.rstrip("/")
+    path = path if path.startswith("/") else f"/{path}"
+    return f"{root}{path}"
 
 
 @router.get("/new", response_class=HTMLResponse)
@@ -58,7 +65,7 @@ async def create_contact(
     db.add(contact)
     db.commit()
     
-    return RedirectResponse(url="/contacts", status_code=303)
+    return RedirectResponse(url=url_with_root("/contacts"), status_code=303)
 
 
 @router.get("", response_class=HTMLResponse)
@@ -144,7 +151,7 @@ async def update_contact(
     contact.note = note.strip() if note else None
     db.commit()
     
-    return RedirectResponse(url="/contacts", status_code=303)
+    return RedirectResponse(url=url_with_root("/contacts"), status_code=303)
 
 
 @router.post("/{contact_id}/delete")
@@ -160,5 +167,5 @@ async def delete_contact(
     db.delete(contact)
     db.commit()
     
-    return RedirectResponse(url="/contacts", status_code=303)
+    return RedirectResponse(url=url_with_root("/contacts"), status_code=303)
 

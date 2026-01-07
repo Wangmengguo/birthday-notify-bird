@@ -11,8 +11,15 @@ from app.db import get_db
 from app.models import EmailLog
 from app.scheduler import trigger_check_now
 from app.templates_config import templates
+from app import settings
 
 router = APIRouter(tags=["logs"])
+
+def url_with_root(path: str) -> str:
+    """Helper to add root_path prefix to redirect URLs."""
+    root = settings.ROOT_PATH.rstrip("/")
+    path = path if path.startswith("/") else f"/{path}"
+    return f"{root}{path}"
 
 
 @router.get("/logs", response_class=HTMLResponse)
@@ -55,14 +62,14 @@ async def list_logs(
 async def trigger_check(request: Request):
     """Manually trigger birthday check (for testing)."""
     trigger_check_now()
-    return RedirectResponse(url="/logs?triggered=1", status_code=303)
+    return RedirectResponse(url=url_with_root("/logs?triggered=1"), status_code=303)
 
 
 @router.get("/api/trigger-check", response_class=HTMLResponse)
 async def trigger_check_page(request: Request):
     """Page to trigger manual check - redirects to logs page."""
     # Redirect to logs page where manual trigger button is available
-    return RedirectResponse(url="/logs", status_code=303)
+    return RedirectResponse(url=url_with_root("/logs"), status_code=303)
 
 
 @router.post("/logs/{log_id}/delete")
@@ -78,7 +85,7 @@ async def delete_log(
     db.delete(log)
     db.commit()
     
-    return RedirectResponse(url="/logs?deleted=1", status_code=303)
+    return RedirectResponse(url=url_with_root("/logs?deleted=1"), status_code=303)
 
 
 @router.post("/logs/clear-all")
@@ -91,5 +98,5 @@ async def clear_all_logs(
         db.delete(log)
     db.commit()
     
-    return RedirectResponse(url="/logs?cleared=1", status_code=303)
+    return RedirectResponse(url=url_with_root("/logs?cleared=1"), status_code=303)
 
