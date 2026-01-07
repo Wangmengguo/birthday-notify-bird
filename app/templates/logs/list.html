@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}发送记录 - Birthday Notify Bird{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1>📬 发送记录</h1>
+    <div style="display: flex; gap: 0.5rem;">
+        <form action="{{ url_for_path('/api/trigger-check') }}" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-secondary" onclick="return confirm('确定要立即执行一次生日检查吗？')">
+                🔄 手动触发检查
+            </button>
+        </form>
+        {% if logs %}
+        <form action="{{ url_for_path('/logs/clear-all') }}" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('确定要删除所有发送记录吗？此操作无法撤销！')">
+                🗑️ 清空所有记录
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% if request.query_params.get('triggered') %}
+<div class="flash flash-success" style="margin-bottom: 1rem;">
+    ✅ 生日检查已触发，请查看下方记录
+</div>
+{% endif %}
+
+{% if request.query_params.get('deleted') %}
+<div class="flash flash-success" style="margin-bottom: 1rem;">
+    ✅ 记录已删除
+</div>
+{% endif %}
+
+{% if request.query_params.get('cleared') %}
+<div class="flash flash-success" style="margin-bottom: 1rem;">
+    ✅ 所有记录已清空
+</div>
+{% endif %}
+
+{% if logs %}
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>联系人</th>
+                <th>提醒类型</th>
+                <th>状态</th>
+                <th>主题</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td style="color: var(--text-secondary); font-size: 0.9rem;">
+                    {{ log.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </td>
+                <td style="font-weight: 500;">
+                    {% if log.contact %}
+                        {{ log.contact.name }}
+                    {% else %}
+                        <span style="color: var(--text-secondary);">(已删除)</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if log.reminder_type == 'today' %}
+                        <span class="badge badge-success">当天</span>
+                    {% elif log.reminder_type == 'day' %}
+                        <span class="badge badge-warning">提前1天</span>
+                    {% elif log.reminder_type == 'week' %}
+                        <span class="badge badge-info">提前7天</span>
+                    {% else %}
+                        <span class="badge">{{ log.reminder_type }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if log.status == 'sent' %}
+                        <span style="color: var(--success);">✅ 成功</span>
+                    {% else %}
+                        <span style="color: var(--danger);" title="{{ log.error or '' }}">❌ 失败</span>
+                    {% endif %}
+                </td>
+                <td style="color: var(--text-secondary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ log.subject }}
+                </td>
+                <td>
+                    <form action="{{ url_for_path('/logs/' ~ log.id ~ '/delete') }}" method="POST" style="display: inline;" 
+                          onsubmit="return confirm('确定要删除这条记录吗？');">
+                        <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+        共 {{ total_count }} 条记录
+    </p>
+    
+    {% if total_pages > 1 %}
+    <div style="display: flex; gap: 0.5rem;">
+        {% if page > 1 %}
+            <a href="{{ url_for_path('/logs') }}?page={{ page - 1 }}" class="btn btn-secondary btn-sm">上一页</a>
+        {% endif %}
+        <span style="padding: 0.375rem 0.75rem; color: var(--text-secondary);">
+            {{ page }} / {{ total_pages }}
+        </span>
+        {% if page < total_pages %}
+            <a href="{{ url_for_path('/logs') }}?page={{ page + 1 }}" class="btn btn-secondary btn-sm">下一页</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% else %}
+<div class="card empty-state">
+    <div class="empty-state-icon">📬</div>
+    <h3>暂无发送记录</h3>
+    <p>当有生日提醒发送时，记录会显示在这里</p>
+    <form action="{{ url_for_path('/api/trigger-check') }}" method="POST" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary">
+            🔄 手动触发检查
+        </button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+
