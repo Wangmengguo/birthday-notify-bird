@@ -7,7 +7,7 @@ services:
     container_name: birthday-notify-bird
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8888:8888"
     volumes:
       # Persist database
       - birthday_data:/app/data
@@ -26,7 +26,7 @@ services:
       # Optional
       - BASE_URL=${BASE_URL:-}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/health')"]
       interval: 30s
       timeout: 10s
       retries: 3

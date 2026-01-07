@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     # Port not exposed directly - access through nginx
     expose:
-      - "8000"
+      - "8888"
     volumes:
       - birthday_data:/app/data
     environment:

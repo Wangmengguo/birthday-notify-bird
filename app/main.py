@@ -93,3 +93,75 @@ async def health():
         "daily_run_at": settings.DAILY_RUN_AT,
     }
 
+
+@app.get("/api/test-email")
+async def test_email():
+    """Send a test email to verify email configuration."""
+    from app.emailer import send_email
+    from datetime import date
+    
+    # Create a test email
+    test_subject = "🧪 Birthday Notify Bird - 测试邮件"
+    test_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f5f5f5;">
+        <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div style="text-align: center; font-size: 48px; margin-bottom: 20px;">🧪</div>
+            
+            <h1 style="text-align: center; color: #333; margin: 0 0 10px 0; font-size: 24px;">
+                测试邮件发送成功！
+            </h1>
+            
+            <p style="text-align: center; color: #666; margin: 0 0 30px 0;">
+                如果你收到这封邮件，说明邮件配置正确 ✅
+            </p>
+            
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <p style="color: #333; margin: 0;">
+                    这是一封测试邮件，用于验证 Birthday Notify Bird 的邮件发送功能是否正常工作。
+                </p>
+            </div>
+            
+            <p style="text-align: center; color: #888; font-size: 14px; margin: 0;">
+                邮件配置信息：
+            </p>
+            <ul style="color: #666; font-size: 14px;">
+                <li>SMTP 服务器: {smtp_host}:{smtp_port}</li>
+                <li>SMTP 模式: {smtp_mode}</li>
+                <li>发送邮箱: {from_email}</li>
+                <li>接收邮箱: {to_email}</li>
+            </ul>
+        </div>
+        
+        <p style="text-align: center; color: #aaa; font-size: 12px; margin-top: 20px;">
+            Birthday Notify Bird 🐦
+        </p>
+    </body>
+    </html>
+    """.format(
+        smtp_host=settings.SMTP_HOST,
+        smtp_port=settings.SMTP_PORT,
+        smtp_mode=settings.SMTP_MODE,
+        from_email=settings.FROM_EMAIL,
+        to_email=settings.TO_EMAIL
+    )
+    
+    success, error_msg = send_email(settings.TO_EMAIL, test_subject, test_html)
+    
+    if success:
+        return {
+            "status": "success",
+            "message": f"测试邮件已成功发送到 {settings.TO_EMAIL}",
+            "to_email": settings.TO_EMAIL,
+        }
+    else:
+        return {
+            "status": "error",
+            "message": f"邮件发送失败: {error_msg}",
+            "to_email": settings.TO_EMAIL,
+        }
+

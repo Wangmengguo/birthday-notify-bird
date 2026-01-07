@@ -16,35 +16,6 @@ router = APIRouter(prefix="/contacts", tags=["contacts"])
 templates = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 
-@router.get("", response_class=HTMLResponse)
-async def list_contacts(request: Request, db: Session = Depends(get_db)):
-    """List all contacts."""
-    contacts = db.execute(
-        select(Contact).order_by(Contact.birthday)
-    ).scalars().all()
-    
-    # Calculate upcoming birthdays
-    today = date.today()
-    for contact in contacts:
-        # Calculate days until next birthday
-        next_birthday = date(today.year, contact.birthday.month, contact.birthday.day)
-        if next_birthday < today:
-            next_birthday = date(today.year + 1, contact.birthday.month, contact.birthday.day)
-        contact.days_until = (next_birthday - today).days
-    
-    # Sort by days until birthday
-    contacts = sorted(contacts, key=lambda c: c.days_until)
-    
-    return templates.TemplateResponse(
-        "contacts/list.html",
-        {
-            "request": request,
-            "contacts": contacts,
-            "today": today,
-        }
-    )
-
-
 @router.get("/new", response_class=HTMLResponse)
 async def new_contact_form(request: Request):
     """Show form to create new contact."""
@@ -90,6 +61,35 @@ async def create_contact(
     db.commit()
     
     return RedirectResponse(url="/contacts", status_code=303)
+
+
+@router.get("", response_class=HTMLResponse)
+async def list_contacts(request: Request, db: Session = Depends(get_db)):
+    """List all contacts."""
+    contacts = db.execute(
+        select(Contact).order_by(Contact.birthday)
+    ).scalars().all()
+    
+    # Calculate upcoming birthdays
+    today = date.today()
+    for contact in contacts:
+        # Calculate days until next birthday
+        next_birthday = date(today.year, contact.birthday.month, contact.birthday.day)
+        if next_birthday < today:
+            next_birthday = date(today.year + 1, contact.birthday.month, contact.birthday.day)
+        contact.days_until = (next_birthday - today).days
+    
+    # Sort by days until birthday
+    contacts = sorted(contacts, key=lambda c: c.days_until)
+    
+    return templates.TemplateResponse(
+        "contacts/list.html",
+        {
+            "request": request,
+            "contacts": contacts,
+            "today": today,
+        }
+    )
 
 
 @router.get("/{contact_id}/edit", response_class=HTMLResponse)

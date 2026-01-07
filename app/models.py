@@ -1,7 +1,10 @@
 """
 SQLAlchemy models for Birthday Notify Bird.
 """
+from __future__ import annotations
+
 from datetime import datetime, date
+from typing import Optional
 from sqlalchemy import String, Text, Date, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -15,7 +18,7 @@ class Contact(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     birthday: Mapped[date] = mapped_column(Date, nullable=False)
-    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, nullable=False
     )
@@ -59,7 +62,7 @@ class EmailLog(Base):
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="sent"
     )  # 'sent', 'failed'
-    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, nullable=False
     )

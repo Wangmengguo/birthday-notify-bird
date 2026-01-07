@@ -12,8 +12,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="/contacts/{{ contact.id }}/edit" 
-          {% if action == 'new' %}action="/contacts/new"{% endif %}>
+    <form method="POST" action="{% if action == 'new' %}/contacts/new{% else %}/contacts/{{ contact.id }}/edit{% endif %}">
         
         <div class="form-group">
             <label for="name">姓名 *</label>

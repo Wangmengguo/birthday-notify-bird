@@ -2,7 +2,7 @@
 Email log viewing and manual trigger routes.
 """
 from datetime import date
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -62,9 +62,36 @@ async def trigger_check(request: Request):
 
 @router.get("/api/trigger-check", response_class=HTMLResponse)
 async def trigger_check_page(request: Request):
-    """Page to trigger manual check."""
-    return templates.TemplateResponse(
-        "logs/trigger.html",
-        {"request": request}
-    )
+    """Page to trigger manual check - redirects to logs page."""
+    # Redirect to logs page where manual trigger button is available
+    return RedirectResponse(url="/logs", status_code=303)
+
+
+@router.post("/logs/{log_id}/delete")
+async def delete_log(
+    log_id: int,
+    db: Session = Depends(get_db),
+):
+    """Delete a single log entry."""
+    log = db.get(EmailLog, log_id)
+    if not log:
+        raise HTTPException(status_code=404, detail="记录不存在")
+    
+    db.delete(log)
+    db.commit()
+    
+    return RedirectResponse(url="/logs?deleted=1", status_code=303)
+
+
+@router.post("/logs/clear-all")
+async def clear_all_logs(
+    db: Session = Depends(get_db),
+):
+    """Delete all log entries."""
+    logs = db.execute(select(EmailLog)).scalars().all()
+    for log in logs:
+        db.delete(log)
+    db.commit()
+    
+    return RedirectResponse(url="/logs?cleared=1", status_code=303)
 
