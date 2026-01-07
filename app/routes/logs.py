@@ -4,17 +4,15 @@ Email log viewing and manual trigger routes.
 from datetime import date
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import select, desc
-from pathlib import Path
 
 from app.db import get_db
 from app.models import EmailLog
 from app.scheduler import trigger_check_now
+from app.templates_config import templates
 
 router = APIRouter(tags=["logs"])
-templates = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 
 @router.get("/logs", response_class=HTMLResponse)

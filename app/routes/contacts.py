@@ -4,16 +4,14 @@ Contact management routes.
 from datetime import date, datetime
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from pathlib import Path
 
 from app.db import get_db
 from app.models import Contact
+from app.templates_config import templates
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
-templates = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 
 @router.get("/new", response_class=HTMLResponse)
