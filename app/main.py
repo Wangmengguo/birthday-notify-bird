@@ -20,6 +20,16 @@ STATIC_DIR.mkdir(exist_ok=True)
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
+# Add root_path to template context
+def url_for_with_root(path: str) -> str:
+    """Helper to add root_path prefix to URLs."""
+    root = settings.ROOT_PATH.rstrip("/")
+    path = path if path.startswith("/") else f"/{path}"
+    return f"{root}{path}"
+
+templates.env.globals["url_for_path"] = url_for_with_root
+templates.env.globals["root_path"] = settings.ROOT_PATH
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -57,6 +67,7 @@ app = FastAPI(
     description="生日提醒小助手 - 提前7天/1天/当天邮件提醒",
     version="0.1.0",
     lifespan=lifespan,
+    root_path=settings.ROOT_PATH,  # 支持子路径部署
 )
 
 # Mount static files

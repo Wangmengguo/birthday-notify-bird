@@ -5,7 +5,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
     <h1>📋 联系人管理</h1>
-    <a href="/contacts/new" class="btn btn-primary">+ 添加联系人</a>
+    <a href="{{ url_for_path('/contacts/new') }}" class="btn btn-primary">+ 添加联系人</a>
 </div>
 
 {% if contacts %}
@@ -46,8 +46,8 @@
                 </td>
                 <td>
                     <div class="actions">
-                        <a href="/contacts/{{ contact.id }}/edit" class="btn btn-secondary btn-sm">编辑</a>
-                        <form action="/contacts/{{ contact.id }}/delete" method="POST" style="display: inline;" 
+                        <a href="{{ url_for_path('/contacts/' ~ contact.id ~ '/edit') }}" class="btn btn-secondary btn-sm">编辑</a>
+                        <form action="{{ url_for_path('/contacts/' ~ contact.id ~ '/delete') }}" method="POST" style="display: inline;" 
                               onsubmit="return confirm('确定要删除 {{ contact.name }} 吗？');">
                             <button type="submit" class="btn btn-danger btn-sm">删除</button>
                         </form>
@@ -68,7 +68,7 @@
     <div class="empty-state-icon">📋</div>
     <h3>还没有联系人</h3>
     <p>添加第一位联系人，开始记录生日吧</p>
-    <a href="/contacts/new" class="btn btn-primary" style="margin-top: 1rem;">+ 添加联系人</a>
+    <a href="{{ url_for_path('/contacts/new') }}" class="btn btn-primary" style="margin-top: 1rem;">+ 添加联系人</a>
 </div>
 {% endif %}
 {% endblock %}

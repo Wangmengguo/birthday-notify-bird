@@ -11,10 +11,10 @@
     </p>
     
     <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem;">
-        <a href="/contacts" class="btn btn-primary">
+        <a href="{{ url_for_path('/contacts') }}" class="btn btn-primary">
             📋 管理联系人
         </a>
-        <a href="/logs" class="btn btn-secondary">
+        <a href="{{ url_for_path('/logs') }}" class="btn btn-secondary">
             📬 查看发送记录
         </a>
     </div>

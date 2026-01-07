@@ -282,14 +282,14 @@
 <body>
     <div class="container">
         <header>
-            <a href="/" class="logo">
+            <a href="{{ url_for_path('/') }}" class="logo">
                 <span class="logo-icon">🐦</span>
                 <span class="logo-text">Birthday Notify Bird</span>
             </a>
             <nav>
-                <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">首页</a>
-                <a href="/contacts" class="{% if '/contacts' in request.url.path %}active{% endif %}">联系人</a>
-                <a href="/logs" class="{% if '/logs' in request.url.path %}active{% endif %}">发送记录</a>
+                <a href="{{ url_for_path('/') }}" class="{% if request.url.path.replace(root_path, '') == '/' %}active{% endif %}">首页</a>
+                <a href="{{ url_for_path('/contacts') }}" class="{% if '/contacts' in request.url.path %}active{% endif %}">联系人</a>
+                <a href="{{ url_for_path('/logs') }}" class="{% if '/logs' in request.url.path %}active{% endif %}">发送记录</a>
             </nav>
         </header>
 

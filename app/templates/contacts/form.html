@@ -12,7 +12,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{% if action == 'new' %}/contacts/new{% else %}/contacts/{{ contact.id }}/edit{% endif %}">
+    <form method="POST" action="{% if action == 'new' %}{{ url_for_path('/contacts/new') }}{% else %}{{ url_for_path('/contacts/' ~ contact.id ~ '/edit') }}{% endif %}">
         
         <div class="form-group">
             <label for="name">姓名 *</label>
@@ -40,7 +40,7 @@
             <button type="submit" class="btn btn-primary">
                 {{ '保存修改' if action == 'edit' else '添加联系人' }}
             </button>
-            <a href="/contacts" class="btn btn-secondary">取消</a>
+            <a href="{{ url_for_path('/contacts') }}" class="btn btn-secondary">取消</a>
         </div>
     </form>
 </div>

@@ -146,7 +146,7 @@ cd projects
 
 # 克隆项目（替换为你的仓库地址）
 git clone https://github.com/your-username/Birthday-notify-bird.git
-cd Birthday-notify-bird
+cd birthday-notify-bird
 ```
 
 ### 方法 2: 使用 SCP 上传

@@ -40,6 +40,10 @@ docker compose up -d
 docker compose -f docker-compose.nginx.yml up -d
 ```
 
+### 子目录部署
+
+部署到 `domain.com/birthday`？查看 [子目录部署指南](SUBDIRECTORY_DEPLOYMENT.md)
+
 ## 测试邮件
 
 ```bash

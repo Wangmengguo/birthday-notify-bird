@@ -35,6 +35,7 @@ DAILY_RUN_AT = os.getenv("DAILY_RUN_AT", "09:00")
 
 # Optional
 BASE_URL = os.getenv("BASE_URL", "")
+ROOT_PATH = os.getenv("ROOT_PATH", "")  # 子路径，如 /birthday
 
 
 def validate_email_settings() -> tuple[bool, str]:
